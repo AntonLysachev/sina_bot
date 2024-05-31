@@ -7,7 +7,7 @@ from datetime import date, datetime
 
 class CastomersOrm(Base):
 
-    __tablename__ = 'customers_'
+    __tablename__ = 'customers'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     phone: Mapped[str] = mapped_column(unique=True, nullable=False)
@@ -26,11 +26,11 @@ metadata_obj = MetaData()
 
 class ReviewsOrm(Base):
 
-    __tablename__ = 'reviews_'
+    __tablename__ = 'reviews'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     review: Mapped[str] = mapped_column(Text, nullable=True)
     grade: Mapped[int] = mapped_column(Integer, nullable=False)
-    customer_id: Mapped[int] = mapped_column(Integer, ForeignKey('customers_.id', ondelete='CASCADE'))
+    customer_id: Mapped[int] = mapped_column(Integer, ForeignKey('customers.id', ondelete='CASCADE'))
     type: Mapped[str] = mapped_column(String(10), nullable=False)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now(), nullable=False)
