@@ -4,6 +4,31 @@ from aiogram.types import Message
 from bot.db.ORM import get_poster_id_by_chat_id
 
 
+async def to_present(poster_id):
+
+    count = 0
+    present_info = {
+        'to_cup': 0,
+        'cups': 0
+    }
+
+    client = poster.get_customer_by_id(poster_id)
+    accumulation_products = client['accumulation_products']
+    prize_products = client['prize_products']
+
+    present_info['cups'] = len(prize_products)
+
+    if accumulation_products:
+        for group in accumulation_products.values():
+            if group['promotion_id'] == 1:
+                for cup in group['products']:
+                    count += cup['count']
+
+    present_info['to_cup'] = 4 - count
+
+    return present_info
+
+
 async def cups(message: Message) -> None:
     chat_id = message.chat.id
     poster_id = await get_poster_id_by_chat_id(chat_id)
@@ -24,7 +49,7 @@ async def get_buy_message(transaction_id: int) -> str:
 
 
 async def get_presemt_message(poster_id: int) -> str:
-    present_info = poster.to_present(poster_id)
+    present_info = await to_present(poster_id)
     to_cup = present_info['to_cup']
     cups = present_info['cups']
     if cups == 0:

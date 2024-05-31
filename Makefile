@@ -8,3 +8,4 @@ start:
 lint:
 	poetry run flake8 bot
 
+PORT ?= 8000

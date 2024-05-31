@@ -29,7 +29,6 @@ async def phone_input(message: Message) -> str | None:
         phone = message.text
         phone_number = phone if re.match(r'^\+\d{11,}$', phone) else None
         if phone_number is None:
-            await message.answer(f'ОЙ! Не верный формат. Проверьте правильность введеных данных и отправте снова', reply_markup=inline_cancal)
+            await message.answer('ОЙ! Не верный формат. Проверьте правильность введеных данных и отправте снова', reply_markup=inline_cancal)
             return None
     return phone_number
-

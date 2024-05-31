@@ -100,7 +100,7 @@ callback = {
     'grade': grade,
     'get_phone': get_phone,
     'get_name': get_name,
-    'cancel' : _cancel,
+    'cancel': _cancel,
     # 'yes': yes,
     # 'no': no,
     # 'add_grade_review_text': add_grade_review_text,
