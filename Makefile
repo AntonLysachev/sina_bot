@@ -1,11 +1,11 @@
 install:
 	poetry install
 
-PORT ?= 8000
 start:
 	poetry run python app.py
 
 lint:
 	poetry run flake8 bot
 
-PORT ?= 8000
+test:
+		poetry run  pytest --cov=bot
