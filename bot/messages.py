@@ -12,7 +12,7 @@ async def to_present(poster_id):
         'cups': 0
     }
 
-    client = poster.get_customer_by_id(poster_id)
+    client = await poster.get_customer_by_id(poster_id)
     accumulation_products = client['accumulation_products']
     prize_products = client['prize_products']
 
@@ -36,7 +36,7 @@ async def cups(message: Message) -> None:
 
 
 async def get_buy_message(transaction_id: int) -> str:
-    buy_products = poster.get_product_in_receipt(transaction_id)
+    buy_products = await poster.get_product_in_receipt(transaction_id)
     name_of_product = ''
     for name, count in buy_products.items():
         normalized_name = products.get(name)
