@@ -9,6 +9,3 @@ lint:
 
 test:
 	poetry run  pytest --cov=bot
-
-venv:
-	.venv\Scripts\activate
