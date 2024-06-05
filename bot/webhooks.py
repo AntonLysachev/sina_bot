@@ -18,28 +18,30 @@ webhooks = web.RouteTableDef()
 @webhooks.post('/webhooks')
 async def process_sale_info(request):
     webhook = await request.json()
+    print('!!!!!!!')
     try:
-        account = webhook['account']
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        # account = webhook['account']
         object = webhook['object']
         object_id = webhook['object_id']
         action = webhook['action']
-        time = webhook['time']
-        secret = os.getenv('POSTER_SECRET')
-        verify = webhook['verify']
-        signature_string = f"{account};{object};{object_id};{action};{time};{secret}"
-        signature = hashlib.md5(signature_string.encode()).hexdigest()
+        # time = webhook['time']
+        # secret = os.getenv('POSTER_SECRET')
+        # verify = webhook['verify']
+        # signature_string = f"{account};{object};{object_id};{action};{time};{secret}"
+        # signature = hashlib.md5(signature_string.encode()).hexdigest()
         entity = entitys.get(object)
         if entity:
             function = entity.get(action)
             if function:
                 function(object_id)
-    except Exception:
+    except Exception as e:
         return web.Response(text='ok', status=200)
     return web.Response(text='ok', status=200)
 
 
-async def closed(object_id):
-    receipt = poster.get_receipt(object_id)
+async def closed(object_id: int):
+    receipt = await poster.get_receipt(object_id)
     poster_id = receipt['client_id']
     chat_id = await get_chat_id_by_poster_id(poster_id)
     if chat_id:

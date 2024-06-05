@@ -8,4 +8,7 @@ lint:
 	poetry run flake8 bot
 
 test:
-		poetry run  pytest --cov=bot
+	poetry run  pytest --cov=bot
+
+venv:
+	.venv\Scripts\activate

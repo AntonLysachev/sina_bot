@@ -20,7 +20,7 @@ class Registration(StatesGroup):
 async def registration_customer(message: Message, state: FSMContext):
     phone_number = await phone_input(message)
     if phone_number:
-        client = poster.get_customer_by_phone(phone_number)
+        client = await poster.get_customer_by_phone(phone_number)
         if client:
             chat_id = message.chat.id
             poster_id = int(client['client_id'])
@@ -33,7 +33,7 @@ async def registration_customer(message: Message, state: FSMContext):
                                       f'Ваши данные в Системе Дружбы:\nИмя: {fullname}\nНомер телефона: {phone_number}',
                                  reply_markup=main_keyboard)
             await state.clear()
-            poster.add_incoming_order(poster_id)
+            await poster.add_incoming_order(poster_id)
         else:
             await message.answer(text="""
 К сожалению, такого контакта нет у нас в друзьях🥹.
