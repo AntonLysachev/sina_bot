@@ -34,7 +34,7 @@ async def process_sale_info(request):
         if entity:
             function = entity.get(action)
             if function:
-                function(object_id)
+                await function(object_id)
     except Exception as e:
         return web.Response(text='ok', status=200)
     return web.Response(text='ok', status=200)
