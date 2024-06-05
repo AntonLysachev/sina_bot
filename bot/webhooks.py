@@ -40,10 +40,10 @@ async def process_sale_info(request):
 
 async def closed(object_id: int):
     receipt = await poster.get_receipt(object_id)
+    print('!!!!!!!!!!!!!!!!')
+    print(receipt)
     poster_id = receipt['client_id']
     chat_id = await get_chat_id_by_poster_id(poster_id)
-    print('!!!!!!!!!!!!!!!!')
-    print(chat_id)
     if chat_id:
         bot = Bot(token=TELEGRAM_TOKEN)
         buy_message = await get_buy_message(object_id)
