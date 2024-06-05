@@ -23,7 +23,6 @@ async def get_customer_by_phone(phone) -> dict:
             if json_response['response']:
                 return json_response['response'][0]
 
-        
 
 async def get_receipt(transaction_id) -> dict:
     async with aiohttp.ClientSession() as session:
@@ -31,7 +30,6 @@ async def get_receipt(transaction_id) -> dict:
             json_response = await response.json()
             if json_response['response']:
                 return json_response['response'][0]
-
 
 
 async def get_product_in_receipt(transaction_id) -> list:
@@ -61,6 +59,5 @@ async def add_incoming_order(poster_id: int) -> None:
                     {
                         'product_id': PRODUCT_ID,
                         'count': 1
-                    }]
-            }) as response:
+                    }]}) as response:
             pass

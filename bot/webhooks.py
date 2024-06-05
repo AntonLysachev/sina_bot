@@ -18,9 +18,7 @@ webhooks = web.RouteTableDef()
 @webhooks.post('/webhooks')
 async def process_sale_info(request):
     webhook = await request.json()
-    print('!!!!!!!')
     try:
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!')
         # account = webhook['account']
         object = webhook['object']
         object_id = webhook['object_id']
@@ -35,7 +33,7 @@ async def process_sale_info(request):
             function = entity.get(action)
             if function:
                 await function(object_id)
-    except Exception as e:
+    except Exception:
         return web.Response(text='ok', status=200)
     return web.Response(text='ok', status=200)
 
@@ -44,6 +42,8 @@ async def closed(object_id: int):
     receipt = await poster.get_receipt(object_id)
     poster_id = receipt['client_id']
     chat_id = await get_chat_id_by_poster_id(poster_id)
+    print('!!!!!!!!!!!!!!!!')
+    print(chat_id)
     if chat_id:
         bot = Bot(token=TELEGRAM_TOKEN)
         buy_message = await get_buy_message(object_id)
