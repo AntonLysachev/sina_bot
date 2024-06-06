@@ -67,6 +67,7 @@ async def get_chat_id_by_poster_id(poster_id: int) -> int:
         query = select(CastomersOrm.chat_id).where(CastomersOrm.poster_id == poster_id)
         result = await session.execute(query)
         chat_id = result.scalars().one_or_none()
+        print(chat_id)
         return chat_id
 
 
