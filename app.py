@@ -42,7 +42,5 @@ app.cleanup_ctx.append(run_other_task)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    try:
-        web.run_app(app)
-    except KeyboardInterrupt:
-        print('EXIT')
+    web.run_app(app)
+    print('Stop Server')

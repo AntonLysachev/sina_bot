@@ -46,12 +46,11 @@ async def closed(object_id: int):
     poster_id = int(receipt['client_id'])
     chat_id = await get_chat_id_by_poster_id(poster_id)
     if chat_id:
-        bot = Bot(token=TELEGRAM_TOKEN)
-        buy_message = await get_buy_message(object_id)
-        present_message = await get_presemt_message(poster_id)
-        await bot.send_message(chat_id, f'{buy_message}\n{present_message}')
-        await bot.send_message(chat_id, 'На сколько звездочек вы оцениваете наше качество обслуживания?', reply_markup=builder.get_grade_keyboard())
-        return
+        async with Bot(token=TELEGRAM_TOKEN) as bot:
+            buy_message = await get_buy_message(object_id)
+            present_message = await get_presemt_message(poster_id)
+            await bot.send_message(chat_id, f'{buy_message}\n{present_message}')
+            await bot.send_message(chat_id, 'На сколько звездочек вы оцениваете наше качество обслуживания?', reply_markup=builder.get_grade_keyboard())
 
 
 transactions = {
