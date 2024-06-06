@@ -7,6 +7,8 @@ from bot import poster
 from bot.db.ORM import get_chat_id_by_poster_id
 from bot.messages import get_buy_message, get_presemt_message
 from bot.keyboards import builder
+import logging
+
 
 load_dotenv()
 
@@ -33,8 +35,8 @@ async def process_sale_info(request):
             function = entity.get(action)
             if function:
                 await function(object_id)
-    except Exception as e:
-        print(e)
+    except Exception:
+        logging.exception('!!!!!!Exception!!!!!')
         return web.Response(text='ok', status=200)
     return web.Response(text='ok', status=200)
 
