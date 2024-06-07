@@ -57,6 +57,6 @@ async def prompt_for_review(message: Message, state: FSMContext) -> None:
 
 async def send_bed_review(text, grade, phone):
     admins = await get_admins()
-    bot = Bot(token=TELEGRAM_TOKEN)
-    for admin in admins:
-        await bot.send_message(admin, f'!!!!!ПЛОХОЙ ОТЗЫВ!!!!!!\n\nНомер клиента: {phone}\n\nОценка: {grade}\n\nОтзыв:\n{text}')
+    async with Bot(token=TELEGRAM_TOKEN) as bot:
+        for admin in admins:
+            await bot.send_message(admin, f'!!!!!ПЛОХОЙ ОТЗЫВ!!!!!!\n\nНомер клиента: {phone}\n\nОценка: {grade}\n\nОтзыв:\n{text}')

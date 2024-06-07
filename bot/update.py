@@ -24,7 +24,7 @@ async def update_name(message: Message, state: FSMContext) -> None:
     poster_id = customer.poster_id
     customer_id = customer.id
     new_name = message.text
-    poster_id = await poster.update_customer_info(**{"client_id": poster_id, "client_name": new_name})
+    poster_id = await poster.update_customer_info(client_id=poster_id, client_name=new_name)
     customer = await poster.get_customer_by_id(poster_id)
     await update_customers_name(customer['firstname'], customer['lastname'], customer_id)
     name = f'{customer["lastname"]} {customer["firstname"]}'
@@ -46,7 +46,7 @@ async def update_phone(message: Message, state: FSMContext) -> None:
         customer = await get_customer_by_chat_id(chat_id)
         poster_id = customer.poster_id
         customer_id = customer.id
-        poster_id = await poster.update_customer_info(**{"client_id": poster_id, "phone": new_phone})
+        poster_id = await poster.update_customer_info(client_id=poster_id, phone=new_phone)
         customer = await poster.get_customer_by_id(poster_id)
         phone = customer['phone']
         if phone:
