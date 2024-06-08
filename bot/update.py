@@ -42,16 +42,17 @@ async def update_phone(message: Message, state: FSMContext) -> None:
         is_exist = await api.get_customer_by_phone(new_phone)
         if is_exist:
             await message.answer('Такой номер уже зарегестрирован', reply_markup=inline_registration)
-        chat_id = message.chat.id
-        customer = await get_customer_by_chat_id(chat_id)
-        poster_id = customer.poster_id
-        customer_id = customer.id
-        poster_id = await api.update_customer_info(client_id=poster_id, phone=new_phone)
-        customer = await api.get_customer_by_id(poster_id)
-        phone = customer['phone']
-        if phone:
-            await update_customer_phone(phone, customer_id)
-            await message.answer(f'Мы изменили номер на: {phone}', reply_markup=main_keyboard)
         else:
-            await message.answer('Произошла ошибка, попробуйте позже')
-        await state.clear()
+            chat_id = message.chat.id
+            customer = await get_customer_by_chat_id(chat_id)
+            poster_id = customer.poster_id
+            customer_id = customer.id
+            poster_id = await api.update_customer_info(client_id=poster_id, phone=new_phone)
+            customer = await api.get_customer_by_id(poster_id)
+            phone = customer['phone']
+            if phone:
+                await update_customer_phone(phone, customer_id)
+                await message.answer(f'Мы изменили номер на: {phone}', reply_markup=main_keyboard)
+            else:
+                await message.answer('Произошла ошибка, попробуйте позже')
+            await state.clear()

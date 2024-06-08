@@ -53,10 +53,8 @@ class API():
             products[product['product_name']] = product['num'].split('.')[0]
         return products
 
-
     async def update_customer_info(self, **kwargs) -> str:
         return await self.post_json_request("clients.updateClient", **kwargs)
-
 
     async def add_incoming_order(self, poster_id: int) -> None:
         kwargs = {'spot_id': 1,
