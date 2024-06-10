@@ -5,7 +5,7 @@ from aiogram import Router
 from bot.keyboards.inline_keyboards.inline_keyboards import inline_cancal
 from bot.keyboards.reply_keyboards.reply_keyboards import main_keyboard
 from bot.poster import API
-from .db.ORM import add_customer
+from .db import orm
 from bot.utils import phone_input
 
 
@@ -29,7 +29,7 @@ async def registration_customer(message: Message, state: FSMContext):
             firstname = client['firstname']
             lastname = client['lastname']
             fullname = f'{lastname} {firstname}'
-            await add_customer(phone_number, chat_id, poster_id, group_name, firstname, lastname)
+            await orm.add_customer(phone_number, chat_id, poster_id, group_name, firstname, lastname)
             await message.answer(text=f'Спасибо за подписку, дорогой друг!🧡.\n'
                                       f'Ваши данные в Системе Дружбы:\nИмя: {fullname}\nНомер телефона: {phone_number}',
                                  reply_markup=main_keyboard)

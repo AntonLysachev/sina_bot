@@ -5,7 +5,7 @@ from aiogram.types import Message
 from bot.keyboards.inline_keyboards.inline_keyboards import inline_registration
 from bot.keyboards.reply_keyboards.reply_keyboards import main_keyboard
 from bot.registratin import Registration as Reg
-from bot.db.ORM import get_customer_by_chat_id
+from bot.db import orm
 
 start = Router()
 
@@ -13,7 +13,7 @@ start = Router()
 @start.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext) -> None:
     chat_id = message.chat.id
-    customer = await get_customer_by_chat_id(chat_id)
+    customer = await orm.get_customer_by_chat_id(chat_id)
     if customer is None:
         await state.set_state(Reg.phone)
         await message.answer("""

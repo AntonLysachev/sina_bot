@@ -17,6 +17,7 @@ async def message_state(storage, bot):
     )
     return message, state
 
+
 @pytest.mark.asyncio
 async def test_start_hendler(storage, bot):
     message, state = await message_state(storage, bot)

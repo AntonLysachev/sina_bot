@@ -5,6 +5,7 @@ import pytest_asyncio
 from .moked_bot import MockedBot
 from aiogram import Dispatcher
 
+
 @pytest_asyncio.fixture(scope="session")
 async def storage():
     tmp_storage = MemoryStorage()
@@ -12,6 +13,7 @@ async def storage():
         yield tmp_storage
     finally:
         await tmp_storage.close()
+
 
 @pytest.fixture()
 def bot():

@@ -1,9 +1,10 @@
 from bot.poster import API
 from bot.utils import products
 from aiogram.types import Message
-from bot.db.ORM import get_poster_id_by_chat_id
+from bot.db import orm
 
 api = API()
+
 
 async def to_present(poster_id):
 
@@ -32,7 +33,7 @@ async def to_present(poster_id):
 
 async def cups(message: Message) -> None:
     chat_id = message.chat.id
-    poster_id = await get_poster_id_by_chat_id(chat_id)
+    poster_id = await orm.get_poster_id_by_chat_id(chat_id)
     await message.answer(await get_presemt_message(poster_id))
 
 

@@ -37,14 +37,11 @@ class API():
     async def get_customer_by_id(self, poster_id: int) -> dict:
         return await self.get_json_request("clients.getClient", client_id=poster_id)
 
-
     async def get_customer_by_phone(self, phone: str) -> dict:
         return await self.get_json_request("clients.getClients", phone=phone)
 
-
     async def get_receipt(self, transaction_id: str) -> dict:
         return await self.get_json_request("dash.getTransaction", transaction_id=transaction_id)
-
 
     async def get_products_in_receipt(self, transaction_id: str) -> list:
         receipt = await self.get_json_request("dash.getTransactionProducts", quantity='many', transaction_id=transaction_id)
@@ -58,9 +55,9 @@ class API():
 
     async def add_incoming_order(self, poster_id: int) -> None:
         kwargs = {'spot_id': 1,
-                'client_id': poster_id,
-                'products': [{
-                    'product_id': PRODUCT_ID,
-                    'count': 1
-                    }]}
+                  'client_id': poster_id,
+                  'products': [{
+                      'product_id': PRODUCT_ID,
+                      'count': 1
+                  }]}
         return await self.post_json_request("incomingOrders.createIncomingOrder", **kwargs)
