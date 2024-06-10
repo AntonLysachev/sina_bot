@@ -1,8 +1,12 @@
 from sqlalchemy import Integer, String, BigInteger, MetaData, Text, ForeignKey, text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Mapped, mapped_column
-from .database import Base
+from sqlalchemy.orm import DeclarativeBase
 from datetime import date, datetime
+
+
+class Base(DeclarativeBase):
+    pass
 
 
 class CastomersOrm(Base):

@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram import Router, F
 from bot.keyboards.reply_keyboards.reply_keyboards import main_keyboard, send_keyboard
 from bot.keyboards.inline_keyboards.inline_keyboards import inline_update_name, inline_update_phone, inline_registration, inline_cancal
-from bot.db.ORM import add_review, get_customer_id_by_chat_id, get_phone_by_chat_id, get_full_name_by_chat_id
+from bot.db import orm
 from bot.update import Update
 from bot.review import review_text, send_bed_review
 
@@ -71,12 +71,12 @@ async def grade(message: Message, state: FSMContext, **kwargs) -> None:
     grade = data.get("grade", None)
     text = data.get("text", None)
     if text:
-        customer_id = await get_customer_id_by_chat_id(chat_id)
-        await add_review(grade, customer_id, 'full', text)
+        customer_id = await orm.get_customer_id_by_chat_id(chat_id)
+        await orm.add_review(grade, customer_id, 'full', text)
         await message.answer('Спасибо за обратную связь! Надеемся, что наша дружба станет крепче!')
         await state.clear()
         if grade < 4:
-            phone = await get_phone_by_chat_id(chat_id)
+            phone = await orm.get_phone_by_chat_id(chat_id)
             await send_bed_review(text, grade, phone)
     else:
         await review_text(message, state)
@@ -84,13 +84,13 @@ async def grade(message: Message, state: FSMContext, **kwargs) -> None:
 
 async def get_phone(message: Message) -> None:
     chat_id = message.chat.id
-    phone = await get_phone_by_chat_id(chat_id)
+    phone = await orm.get_phone_by_chat_id(chat_id)
     await message.answer(f'Ваш номер в нашей "Системе дружбы": {phone}', reply_markup=inline_update_phone)
 
 
 async def get_name(message: Message) -> None:
     chat_id = message.chat.id
-    full_name = await get_full_name_by_chat_id(chat_id)
+    full_name = await orm.get_full_name_by_chat_id(chat_id)
     await message.answer(f'Ваше имя в нашей "Системе дружбы": {full_name}', reply_markup=inline_update_name)
 
 

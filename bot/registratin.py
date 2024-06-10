@@ -4,12 +4,13 @@ from aiogram.types import Message
 from aiogram import Router
 from bot.keyboards.inline_keyboards.inline_keyboards import inline_cancal
 from bot.keyboards.reply_keyboards.reply_keyboards import main_keyboard
-import bot.poster as poster
-from .db.ORM import add_customer
+from bot.poster import API
+from .db import orm
 from bot.utils import phone_input
 
 
 registration = Router()
+api = API()
 
 
 class Registration(StatesGroup):
@@ -20,7 +21,7 @@ class Registration(StatesGroup):
 async def registration_customer(message: Message, state: FSMContext):
     phone_number = await phone_input(message)
     if phone_number:
-        client = await poster.get_customer_by_phone(phone_number)
+        client = await api.get_customer_by_phone(phone_number)
         if client:
             chat_id = message.chat.id
             poster_id = int(client['client_id'])
@@ -28,12 +29,12 @@ async def registration_customer(message: Message, state: FSMContext):
             firstname = client['firstname']
             lastname = client['lastname']
             fullname = f'{lastname} {firstname}'
-            await add_customer(phone_number, chat_id, poster_id, group_name, firstname, lastname)
+            await orm.add_customer(phone_number, chat_id, poster_id, group_name, firstname, lastname)
             await message.answer(text=f'Спасибо за подписку, дорогой друг!🧡.\n'
                                       f'Ваши данные в Системе Дружбы:\nИмя: {fullname}\nНомер телефона: {phone_number}',
                                  reply_markup=main_keyboard)
             await state.clear()
-            await poster.add_incoming_order(poster_id)
+            await api.add_incoming_order(poster_id)
         else:
             await message.answer(text="""
 К сожалению, такого контакта нет у нас в друзьях🥹.

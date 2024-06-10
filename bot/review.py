@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from bot.db.ORM import add_review, get_customer_id_by_chat_id, get_admins
+from bot.db import orm
 from aiogram import Router
 from aiogram.types import Message
 from bot.keyboards import builder
@@ -29,8 +29,8 @@ async def review_start(message: Message, state: FSMContext) -> None:
     text = data.get("text", None)
     if grade:
         chat_id = message.chat.id
-        customer_id = await get_customer_id_by_chat_id(chat_id)
-        await add_review(grade, customer_id, 'only_grade', text)
+        customer_id = await orm.get_customer_id_by_chat_id(chat_id)
+        await orm.add_review(grade, customer_id, 'only_grade', text)
         await message.answer('Спасибо за вашу обратную связь! Нам важно каждое мнение. Надеемся, что наша дружба станет крепче!')
         await state.clear()
     else:
@@ -44,9 +44,9 @@ async def review_text(message: Message, state: FSMContext) -> None:
         await prompt_for_review(message, state)
     else:
         chat_id = message.chat.id
-        customer_id = await get_customer_id_by_chat_id(chat_id)
+        customer_id = await orm.get_customer_id_by_chat_id(chat_id)
         await message.answer("Помоги нам стать лучше! Оставь свой отзыв в социальных сетях:", reply_markup=inline_contacts)
-        await add_review(grade, customer_id, 'only_grade')
+        await orm.add_review(grade, customer_id, 'only_grade')
         await state.clear()
 
 
@@ -56,7 +56,7 @@ async def prompt_for_review(message: Message, state: FSMContext) -> None:
 
 
 async def send_bed_review(text, grade, phone):
-    admins = await get_admins()
-    bot = Bot(token=TELEGRAM_TOKEN)
-    for admin in admins:
-        await bot.send_message(admin, f'!!!!!ПЛОХОЙ ОТЗЫВ!!!!!!\n\nНомер клиента: {phone}\n\nОценка: {grade}\n\nОтзыв:\n{text}')
+    admins = await orm.get_admins()
+    async with Bot(token=TELEGRAM_TOKEN) as bot:
+        for admin in admins:
+            await bot.send_message(admin, f'!!!!!ПЛОХОЙ ОТЗЫВ!!!!!!\n\nНомер клиента: {phone}\n\nОценка: {grade}\n\nОтзыв:\n{text}')

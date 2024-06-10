@@ -9,55 +9,55 @@ POSTER_URL = os.getenv('POSTER_URL')
 PRODUCT_ID = int(os.getenv('PRODUCT_ID'))
 
 
-async def get_customer_by_id(poster_id) -> dict:
-    async with aiohttp.ClientSession() as session:
-        async with await session.get(f'{POSTER_URL}/clients.getClient?format=json&token={POSTER_TOKEN}&client_id={poster_id}') as response:
-            json_response = await response.json()
-            return json_response['response'][0]
+class API():
 
+    def __init__(self, token=POSTER_TOKEN, base_url=POSTER_URL) -> None:
+        self._token = token
+        self._base_url = base_url
 
-async def get_customer_by_phone(phone) -> dict:
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f'{POSTER_URL}/clients.getClients?format=json&token={POSTER_TOKEN}&phone={phone}') as response:
-            json_response = await response.json()
-            if json_response['response']:
-                return json_response['response'][0]
+    def get_url(self, rpc_method) -> str:
+        return f'{self._base_url}{rpc_method}?token={self._token}'
 
+    async def get_json_request(self, rpc_method: str, quantity='one', **kwargs) -> dict:
+        async with aiohttp.ClientSession() as session:
+            async with await session.get(self.get_url(rpc_method), params=kwargs) as response:
+                json_response = await response.json()
+                if json_response['response']:
+                    if quantity == 'one':
+                        return json_response['response'][0]
+                    if quantity == 'many':
+                        return json_response['response']
 
-async def get_receipt(transaction_id) -> dict:
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f'{POSTER_URL}/dash.getTransaction?format=json&token={POSTER_TOKEN}&transaction_id={transaction_id}') as response:
-            json_response = await response.json()
-            if json_response['response']:
-                return json_response['response'][0]
+    async def post_json_request(self, rpc_method: str, **kwargs) -> dict:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self.get_url(rpc_method), json=kwargs) as response:
+                json_response = await response.json()
+                return json_response['response']
 
+    async def get_customer_by_id(self, poster_id: int) -> dict:
+        return await self.get_json_request("clients.getClient", client_id=poster_id)
 
-async def get_product_in_receipt(transaction_id) -> list:
-    products = {}
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f'{POSTER_URL}/dash.getTransactionProducts?format=json&token={POSTER_TOKEN}&transaction_id={transaction_id}') as response:
-            json_response = await response.json()
-            receipt = json_response['response']
-            for product in receipt:
-                products[product['product_name']] = int(float(product['num']))
-            return products
+    async def get_customer_by_phone(self, phone: str) -> dict:
+        return await self.get_json_request("clients.getClients", phone=phone)
 
+    async def get_receipt(self, transaction_id: str) -> dict:
+        return await self.get_json_request("dash.getTransaction", transaction_id=transaction_id)
 
-async def update_customer_info(**kwargs) -> str:
-    async with aiohttp.ClientSession() as session:
-        async with session.post(f'{POSTER_URL}/clients.updateClient?token={POSTER_TOKEN}', data=kwargs) as response:
-            json_response = await response.json()
-            return json_response['response']
+    async def get_products_in_receipt(self, transaction_id: str) -> list:
+        receipt = await self.get_json_request("dash.getTransactionProducts", quantity='many', transaction_id=transaction_id)
+        products = {}
+        for product in receipt:
+            products[product['product_name']] = product['num'].split('.')[0]
+        return products
 
+    async def update_customer_info(self, **kwargs) -> str:
+        return await self.post_json_request("clients.updateClient", **kwargs)
 
-async def add_incoming_order(poster_id: int) -> None:
-    async with aiohttp.ClientSession() as session:
-        async with session.post(f'{POSTER_URL}/incomingOrders.createIncomingOrder?token={POSTER_TOKEN}', json={
-                'spot_id': 1,
-                'client_id': poster_id,
-                'products': [
-                    {
-                        'product_id': PRODUCT_ID,
-                        'count': 1
-                    }]}) as response:
-            pass
+    async def add_incoming_order(self, poster_id: int) -> None:
+        kwargs = {'spot_id': 1,
+                  'client_id': poster_id,
+                  'products': [{
+                      'product_id': PRODUCT_ID,
+                      'count': 1
+                  }]}
+        return await self.post_json_request("incomingOrders.createIncomingOrder", **kwargs)

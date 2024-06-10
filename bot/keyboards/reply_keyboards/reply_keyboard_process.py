@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from bot.messages import cups
 from bot.keyboards.inline_keyboards.inline_keyboards import inline_registration, inline_contacts, inline_cancal, inline_update
 from bot.review import Review
-from bot.db.ORM import get_customer_by_chat_id
+from bot.db import orm
 from bot.registratin import Registration
 
 
@@ -27,7 +27,7 @@ async def handle_all_messages(message: Message, state: FSMContext) -> None:
 
     chat_id = message.chat.id
     button = buttons.get(message.text)
-    customer = await get_customer_by_chat_id(chat_id)
+    customer = await orm.get_customer_by_chat_id(chat_id)
     if button:
         if customer:
             await button(message)
