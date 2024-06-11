@@ -68,7 +68,7 @@ class ORM():
 
     async def get_chat_id_by_poster_id(self, poster_id: int) -> int:
         query = select(CastomersOrm.chat_id).where(CastomersOrm.poster_id == poster_id)
-        return self.execute_select_query(query, 'scalars.one')
+        return await self.execute_select_query(query, 'scalars.one')
 
     async def get_poster_id_by_chat_id(self, chat_id: int) -> int:
         query = select(CastomersOrm.poster_id).where(CastomersOrm.chat_id == chat_id)
