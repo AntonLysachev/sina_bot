@@ -6,7 +6,7 @@ from bot.keyboards.reply_keyboards.reply_keyboards import main_keyboard, send_ke
 from bot.keyboards.inline_keyboards.inline_keyboards import inline_update_name, inline_update_phone, inline_registration, inline_cancal
 from bot.db import orm
 from bot.update import Update
-from bot.review import review_text, send_bed_review
+from bot.review import save_only_grade_review, save_full_review
 
 
 callbacks = Router()
@@ -71,15 +71,9 @@ async def grade(message: Message, state: FSMContext, **kwargs) -> None:
     grade = data.get("grade", None)
     text = data.get("text", None)
     if text:
-        customer_id = await orm.get_customer_id_by_chat_id(chat_id)
-        await orm.add_review(grade, customer_id, 'full', text)
-        await message.answer('Спасибо за обратную связь! Надеемся, что наша дружба станет крепче!')
-        await state.clear()
-        if grade < 4:
-            phone = await orm.get_phone_by_chat_id(chat_id)
-            await send_bed_review(text, grade, phone)
+        await save_full_review(message, state, grade, text, chat_id)
     else:
-        await review_text(message, state)
+        await save_only_grade_review(message, state)
 
 
 async def get_phone(message: Message) -> None:

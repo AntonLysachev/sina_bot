@@ -26,18 +26,27 @@ async def review_start(message: Message, state: FSMContext) -> None:
     await state.update_data(text=message.text)
     data = await state.get_data()
     grade = data.get("grade", None)
-    text = data.get("text", None)
+    text = data.get("text", '')
+    chat_id = message.chat.id
     if grade:
-        chat_id = message.chat.id
-        customer_id = await orm.get_customer_id_by_chat_id(chat_id)
-        await orm.add_review(grade, customer_id, 'only_grade', text)
-        await message.answer('Спасибо за вашу обратную связь! Нам важно каждое мнение. Надеемся, что наша дружба станет крепче!')
-        await state.clear()
+        await save_full_review(message, state, grade, text, chat_id)
     else:
         await message.answer('На сколько звездочек вы оцениваете наше качество обслуживания?', reply_markup=builder.get_grade_keyboard())
 
 
-async def review_text(message: Message, state: FSMContext) -> None:
+async def save_full_review(message: Message, state: FSMContext, grade: int, text: str, chat_id: int):
+        customer_id = await orm.get_customer_id_by_chat_id(chat_id)
+        await orm.add_review(grade, customer_id, 'full', text)
+        await message.answer('Спасибо за обратную связь! Нам важно каждое мнение. Надеемся, что наша дружба станет крепче!')
+        await state.clear()
+        if grade < 4:
+            phone = await orm.get_phone_by_chat_id(chat_id)
+            await send_bed_review(text, grade, phone)
+        else:
+            await message.answer("Помоги нам стать лучше! Оставь свой отзыв в социальных сетях:", reply_markup=inline_contacts)
+
+
+async def save_only_grade_review(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     grade = data.get('grade')
     if grade < 4:
@@ -45,8 +54,8 @@ async def review_text(message: Message, state: FSMContext) -> None:
     else:
         chat_id = message.chat.id
         customer_id = await orm.get_customer_id_by_chat_id(chat_id)
+        await orm.add_review(grade, customer_id, 'only_grade', '')
         await message.answer("Помоги нам стать лучше! Оставь свой отзыв в социальных сетях:", reply_markup=inline_contacts)
-        await orm.add_review(grade, customer_id, 'only_grade')
         await state.clear()
 
 
