@@ -15,7 +15,7 @@ load_dotenv()
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 webhooks = web.RouteTableDef()
-api = API
+api = API()
 
 
 @webhooks.post('/webhooks')
@@ -25,11 +25,8 @@ async def process_sale_info(request):
     try:
         # account = webhook['account']
         object = webhook['object']
-        print(object)
         object_id = webhook['object_id']
-        print(object_id)
         action = webhook['action']
-        print(action)
         # time = webhook['time']
         # secret = os.getenv('POSTER_SECRET')
         # verify = webhook['verify']
