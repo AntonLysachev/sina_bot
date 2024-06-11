@@ -16,6 +16,7 @@ from contextlib import suppress
 load_dotenv()
 
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+APP_PORT = int(os.getenv('APP_PORT'))
 
 bot = Bot(token=TELEGRAM_TOKEN)
 Dp = Dispatcher()
@@ -42,5 +43,5 @@ app.cleanup_ctx.append(run_other_task)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    web.run_app(app)
+    web.run_app(app, port=APP_PORT)
     print('Stop Server')
