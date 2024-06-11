@@ -21,7 +21,6 @@ api = API()
 @webhooks.post('/webhooks')
 async def process_sale_info(request):
     webhook = await request.json()
-    print(webhook)
     try:
         # account = webhook['account']
         object = webhook['object']
@@ -47,6 +46,8 @@ async def closed(object_id: int):
     receipt = await api.get_receipt(object_id)
     poster_id = int(receipt['client_id'])
     chat_id = await orm.get_chat_id_by_poster_id(poster_id)
+    print('!!!!!!!!!!!')
+    print(chat_id)
     if chat_id:
         async with Bot(token=TELEGRAM_TOKEN) as bot:
             buy_message = await get_buy_message(object_id)
