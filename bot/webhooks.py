@@ -21,6 +21,7 @@ api = API
 @webhooks.post('/webhooks')
 async def process_sale_info(request):
     webhook = await request.json()
+    print(webhook)
     try:
         # account = webhook['account']
         object = webhook['object']
