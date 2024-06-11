@@ -22,15 +22,16 @@ api = API()
 async def process_sale_info(request):
     webhook = await request.json()
     try:
-        # account = webhook['account']
+        account = webhook['account']
         object = webhook['object']
         object_id = webhook['object_id']
         action = webhook['action']
-        # time = webhook['time']
-        # secret = os.getenv('POSTER_SECRET')
-        # verify = webhook['verify']
-        # signature_string = f"{account};{object};{object_id};{action};{time};{secret}"
-        # signature = hashlib.md5(signature_string.encode()).hexdigest()
+        time = webhook['time']
+        secret = os.getenv('POSTER_SECRET')
+        verify = webhook['verify']
+        signature_string = f"{account};{object};{object_id};{action};{time};{secret}"
+        signature = hashlib.md5(signature_string.encode()).hexdigest()
+        print(verify == signature)
         entity = entitys.get(object)
         if entity:
             function = entity.get(action)

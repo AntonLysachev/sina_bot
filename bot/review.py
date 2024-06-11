@@ -35,15 +35,15 @@ async def review_start(message: Message, state: FSMContext) -> None:
 
 
 async def save_full_review(message: Message, state: FSMContext, grade: int, text: str, chat_id: int):
-        customer_id = await orm.get_customer_id_by_chat_id(chat_id)
-        await orm.add_review(grade, customer_id, 'full', text)
-        await message.answer('Спасибо за обратную связь! Нам важно каждое мнение. Надеемся, что наша дружба станет крепче!')
-        await state.clear()
-        if grade < 4:
-            phone = await orm.get_phone_by_chat_id(chat_id)
-            await send_bed_review(text, grade, phone)
-        else:
-            await message.answer("Помоги нам стать лучше! Оставь свой отзыв в социальных сетях:", reply_markup=inline_contacts)
+    customer_id = await orm.get_customer_id_by_chat_id(chat_id)
+    await orm.add_review(grade, customer_id, 'full', text)
+    await message.answer('Спасибо за обратную связь! Нам важно каждое мнение. Надеемся, что наша дружба станет крепче!')
+    await state.clear()
+    if grade < 4:
+        phone = await orm.get_phone_by_chat_id(chat_id)
+        await send_bed_review(text, grade, phone)
+    else:
+        await message.answer("Помоги нам стать лучше! Оставь свой отзыв в социальных сетях:", reply_markup=inline_contacts)
 
 
 async def save_only_grade_review(message: Message, state: FSMContext) -> None:
