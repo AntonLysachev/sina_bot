@@ -2,9 +2,13 @@ from bot.poster import API
 from bot.utils import products
 from aiogram.types import Message
 from bot.db import orm
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 api = API()
-
+PROMOTION_ID = os.getenv("PROMOTION_ID")
 
 async def to_present(poster_id):
 
@@ -22,7 +26,7 @@ async def to_present(poster_id):
 
     if accumulation_products:
         for group in accumulation_products.values():
-            if group['promotion_id'] == 1:
+            if group['promotion_id'] == PROMOTION_ID:
                 for cup in group['products']:
                     count += cup['count']
 

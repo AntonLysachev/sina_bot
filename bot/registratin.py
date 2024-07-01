@@ -34,7 +34,7 @@ async def registration_customer(message: Message, state: FSMContext):
                                       f'Ваши данные в Системе Дружбы:\nИмя: {fullname}\nНомер телефона: {phone_number}',
                                  reply_markup=main_keyboard)
             await state.clear()
-            await api.add_incoming_order(poster_id)
+            #await api.add_incoming_order(poster_id)
         else:
             await message.answer(text="""
 К сожалению, такого контакта нет у нас в друзьях🥹.
