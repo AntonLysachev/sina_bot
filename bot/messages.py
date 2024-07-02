@@ -26,7 +26,7 @@ async def to_present(poster_id):
 
     if accumulation_products:
         for group in accumulation_products.values():
-            if group['promotion_id'] == PROMOTION_ID:
+            if group['promotion_id'] == int(PROMOTION_ID):
                 for cup in group['products']:
                     count += cup['count']
 
